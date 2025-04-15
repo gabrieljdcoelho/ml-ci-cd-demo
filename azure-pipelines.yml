@@ -1,0 +1,28 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Instalar dependências'
+
+- script: |
+    pytest tests/
+  displayName: 'Correr testes'
+
+- script: |
+    python src/train.py
+  displayName: 'Treinar modelo'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'model'
+    ArtifactName: 'modelo_treinado'
